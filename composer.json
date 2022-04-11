@@ -1,0 +1,15 @@
+{
+    "name": "obras_publicas/obras",
+    "autoload": {
+        "psr-4": {
+            "ObrasPublicas\\Obras\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jeferson Ferreira",
+            "email": "jeferson89fs@gmail.com"
+        }
+    ],
+    "require": {}
+}
