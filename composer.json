@@ -11,5 +11,8 @@
             "email": "jeferson89fs@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "twig/twig": "3.0",
+        "twbs/bootstrap": "5.0.2"
+    }
 }

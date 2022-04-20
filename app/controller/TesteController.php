@@ -1,10 +1,24 @@
 <?php
+
 namespace App\Controller;
 
-class TesteController
+use App\Core\Controller;
+
+class TesteController extends Controller
 {
-    public function __construct()
+    public function index()
     {
-        echo "estamos aqui";
+        $this->load('home/home', [
+            'teste' => 'xx'
+        ]);
+    }
+
+    public function index2($i)
+    {
+
+        dd($i);
+        $this->load('home/home', [
+            'teste' => 'xx'
+        ]);
     }
 }

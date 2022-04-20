@@ -1,11 +1,6 @@
-<?php
+<?php 
 
-$this->get('/', function(){
-    echo 'home';
-    //homeController@index
-});
-
-$this->get('/home', function(){
-    echo 'aa';
-    //'homeController@index'
-});
+$this->get('/',          'HomeController@index');
+$this->get('/home',      'HomeController@index');
+$this->get('/teste',     'TesteController@index');
+$this->get('/teste/{xx}','TesteController@index2');
