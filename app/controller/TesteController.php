@@ -8,7 +8,7 @@ class TesteController extends Controller
 {
     public function index()
     {
-        $this->load('home/home', [
+        $this->load('teste/default', [
             'teste' => 'xx'
         ]);
     }

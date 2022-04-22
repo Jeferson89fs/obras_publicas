@@ -9,6 +9,8 @@ class HomeController extends Controller
 
     public function index()
     {
-        $this->load('home/home', []);
+        $this->load('home/default', [
+            'teste' => 'xx'
+        ]);
     }
 }

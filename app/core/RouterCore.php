@@ -3,12 +3,13 @@
 namespace App\Core;
 
 
-class RouterCore
+class RouterCore 
 {
 
-    private $uri;
-    private $method;
-    private $getArr = [];
+    public static $uri;
+    public static $method;
+    public static $getArr = [];
+    public static $postArr = [];
 
     public function __construct()
     {
@@ -26,7 +27,7 @@ class RouterCore
             unset($uri[$i]);
         }
 
-        $this->uri = implode('/', $uri);
+        self::$uri = implode('/', $uri);
         require_once("../app/config/Router.php");
         $this->execute();
     }
@@ -34,53 +35,21 @@ class RouterCore
     private function execute()
     {
         switch ($this->method) {
-            case 'GET':
-                $this->executeGet();
+            case 'GET':                
+                return RouterGet::executeGet($this->getArr);
+                break;
+            case 'POST':
+                return RouterPost::executePost($this->postArr);
+                break;
+            case 'DELETE':
+                return Routerdelete::executeDelete($this->deleteArr);
                 break;
         }
     }
 
-    private function executeGet()
-    {
-        foreach ($this->getArr as $get) {
-            $route = substr($get['router'], 0, -1) == '/' ? substr($get['router'], 0, -1) : $get['router'];
+    
 
-            if ($this->waitingForParameter($route)) {
-
-                $exRoute = explode('/', $route);
-                $exParam = explode('/', $this->uri);
-                $arrParam = [];
-
-                foreach ($exParam as $chave => $valor) {
-                    if (substr($exRoute[$chave + 1], 0, 1) == '{' && substr($exRoute[$chave + 1], -1) == '}') {
-                        $arrParam[] =  $exParam[$chave];
-                    }
-                }
-
-                if (count($arrParam) == 0) {
-                    (new \App\Controller\MessageController)->message404(
-                        'Dados Fornecedos incorretamente',
-                        'Parametros Inválidos',
-                        404
-                    );
-                    return;
-                }
-
-                $this->executeController($get, $arrParam); //passando string controller
-
-            } else  if ($route == '/' . $this->uri) {
-                if (is_callable($get['call'])) { //se for uma funcao ananima
-                    $get['call']();
-                    break;
-                } else {
-                    $this->executeController($get); //passando string controller
-                    return;
-                }
-            }
-        }
-    }
-
-    private function waitingForParameter($route)
+    public static function waitingForParameter($route)
     {
         $padrao = "/^[\/a-z0-9\.\_\-]+";
         $padrao .= "[\/]+";
@@ -92,7 +61,7 @@ class RouterCore
     }
 
 
-    private function executeController($get, $arrParam = [])
+    public static function executeController($get, $arrParam = [])
     {
         $ex = explode('@', $get['call']);
         $class = $ex[0];
