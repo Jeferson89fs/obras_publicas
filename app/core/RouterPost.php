@@ -2,7 +2,7 @@
 
 namespace  App\Core;
 
-class RouterPost extends RouterCore
+class RouterPost extends Router
 {
     protected function executePost($PostArr)
     {

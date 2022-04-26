@@ -2,7 +2,7 @@
 
 namespace  App\Core;
 
-class RouterDelete extends RouterCore
+class RouterDelete extends Router
 {
     protected function executeDelete($deleteArr)
     {

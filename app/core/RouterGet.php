@@ -2,11 +2,11 @@
 
 namespace  App\Core;
 
-class RouterGet extends RouterCore
+class RouterGet extends Router
 {
     static protected function executeGet($getArr)
     {        
-        
+       
         foreach ($getArr as $get) {
             $route = substr($get['router'], 0, -1) == '/' ? substr($get['router'], 0, -1) : $get['router'];
             

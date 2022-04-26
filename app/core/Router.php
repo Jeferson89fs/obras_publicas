@@ -3,7 +3,7 @@
 namespace App\Core;
 
 
-class RouterCore 
+class Router 
 {
 
     public static $uri;
