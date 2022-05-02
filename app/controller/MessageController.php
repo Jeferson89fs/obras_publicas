@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Core\Controller;
+use App\Http\Controller;
 
 class MessageController extends Controller
 {

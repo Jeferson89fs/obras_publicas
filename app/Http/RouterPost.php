@@ -1,19 +1,18 @@
 <?php
 
-namespace  App\Core;
+namespace  App\Http;
 
-class RouterGet extends Router
+class RouterPost extends Router
 {
-    static protected function executeGet($getArr)
-    {        
-       
-        foreach ($getArr as $get) {
-            $route = substr($get['router'], 0, -1) == '/' ? substr($get['router'], 0, -1) : $get['router'];
-            
-            if (parent::waitingForParameter($route)) {
-            
+    protected function executePost($PostArr)
+    {
+        foreach ($PostArr as $Post) {
+            $route = substr($Post['router'], 0, -1) == '/' ? substr($Post['router'], 0, -1) : $Post['router'];
+
+            if ($this->waitingForParameter($route)) {
+
                 $exRoute = explode('/', $route);
-                $exParam = explode('/', parent::$uri);
+                $exParam = explode('/', $this->uri);
                 $arrParam = [];
 
                 foreach ($exParam as $chave => $valor) {
@@ -31,15 +30,14 @@ class RouterGet extends Router
                     return;
                 }
 
-                self::executeController($get, $arrParam); //passando string controller
+                $this->executeController($Post, $arrParam); //passando string controller
 
-            } else if ($route == '/' . self::$uri) {
-
-                if (is_callable($get['call'])) { //se for uma funcao ananima
-                    $get['call']();
+            } else if ($route == '/' . $this->uri) {
+                if (is_callable($Post['call'])) { //se for uma funcao ananima
+                    $Post['call']();
                     break;
-                } else {                    
-                    self::executeController($get); //passando string controller
+                } else {
+                    $this->executeController($Post); //passando string controller
                     return;
                 }
             }
