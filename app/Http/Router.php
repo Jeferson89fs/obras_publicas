@@ -43,7 +43,6 @@ class Router
      */
     private  function addRoute($method, $route, $controller)
     {
-
         $this->routes[$method][$this->grupo ?? '/'][$route][] = $controller;
 
         //$this->run();
@@ -64,58 +63,67 @@ class Router
         $xUri = strlen($this->prefixo) ? explode($this->prefixo, $uri) : explode('/', $uri);
 
         if ($this->is_group($method_atual, $xUri)) {
-            try {
-                $group = trim($xUri[0]) != "" ? $xUri[0] : '/';
-                $routes = $this->routes;
-                unset($xUri[0]);
-                $urlAtual = '/' . $xUri[1];
-                unset($xUri[1]);
-                foreach ($routes[$method_atual][$group] as $c => $v) {
-                    if ($c == $urlAtual) {
+            $group =  trim($xUri[0]) != "" ? $xUri[0] : '/';
+            unset($xUri[0]);
+            $urlAtual = '/' . $xUri[1];
+            unset($xUri[1]);
+        } else {
+            $group = '/';
+            $urlAtual = '/' . $xUri[0];
+            unset($xUri[0]);
+        }
 
-                        if ($v[0] instanceof Closure) {
-                            $v[0]();
-                            exit;
-                        } else if (is_string(end($v))) {
-                            $controllerMethod  = explode('@', end($v));
+        $routes = $this->routes;
 
-                            $class = $controllerMethod[0];
-                            $method = $controllerMethod[1];
+        //dd($routes[$method_atual] ,false);
+        try {
 
-                            if (!isset($class) || !isset($method)) {
-                                (new \App\Controller\MessageController)->message404(
-                                    'Dados Fornecedos incorretamente',
-                                    'Classe e methodos não especificados corretamente',
-                                    404
-                                );
-                                return;
-                            }
+            foreach ($routes[$method_atual][$group] as $c => $v) {
+                $x = substr($c, 1) == '' ? '/' : '/' . reset(explode('/', substr($c, 1)));
 
-                            $class =  'App\\Controller\\' . $class;
+                if ($x == $urlAtual) {
 
-                            if (!method_exists($class, $method)) {
+                    if ($v[0] instanceof Closure) {
+                        $v[0]();
+                        exit;
+                    } else if (is_string(end($v))) {
+                        $controllerMethod  = explode('@', end($v));
 
-                                (new \App\Controller\MessageController)->message404(
-                                    'Methodo não encontrado',
-                                    'Não foi encvontrado o método (' . $method . ') na clesse (' . $class . ')',
-                                    404
-                                );
-                                return;
-                            }
+                        $class = $controllerMethod[0];
+                        $method = $controllerMethod[1];
 
-                            //demais parametros da url sao parametros
-                            //foi apagado o indice 0 e 1 que é o grupo e o controller                            
-                            $arrParam =  $xUri;
-                            call_user_func_array([new $class, $method], $arrParam);
+                        if (!isset($class) || !isset($method)) {
+                            (new \App\Controller\MessageController)->message404(
+                                'Dados Fornecedos incorretamente',
+                                'Classe e methodos não especificados corretamente',
+                                404
+                            );
+                            return;
                         }
+
+                        $class =  'App\\Controller\\' . $class;
+
+                        if (!method_exists($class, $method)) {
+
+                            (new \App\Controller\MessageController)->message404(
+                                'Methodo não encontrado',
+                                'Não foi encvontrado o método (' . $method . ') na clesse (' . $class . ')',
+                                404
+                            );
+                            return;
+                        }
+
+                        //demais parametros da url sao parametros
+                        //foi apagado o indice 0 e 1 que é o grupo e o controller                            
+                        $arrParam =  $xUri;
+                        call_user_func_array([new $class, $method], $arrParam);
                     }
                 }
-            } catch (Exception $e) {
-                throw new Exception($e->getMessage(), $e->getCode());
             }
-
-            exit;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
         }
+
 
         (new \App\Controller\MessageController)->message404(
             'Rota não encontrada',
@@ -129,5 +137,15 @@ class Router
     public function get($route, $controller)
     {
         $this->addRoute('GET', $route, $controller);
+    }
+
+    public function post($route, $controller)
+    {
+        $this->addRoute('POST', $route, $controller);
+    }
+
+    public function delete($route, $controller)
+    {
+        $this->addRoute('DELETE', $route, $controller);
     }
 }

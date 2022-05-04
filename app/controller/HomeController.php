@@ -3,21 +3,16 @@
 namespace App\Controller;
 
 use App\Http\Controller;
+use App\Controller\AbstractController;
 
-class HomeController extends Controller
+class HomeController extends AbstractController
 {
 
-    public function index_admin($a)
+    public function index()
     {
         $this->load('home/default', [
             'teste' => 'xx'
         ]);
     }
     
-    public function index_admin3($a)
-    {
-        $this->load('home/default', [
-            'teste' => 'xx'
-        ]);
-    }
 }
