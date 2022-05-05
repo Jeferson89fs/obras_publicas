@@ -7,7 +7,6 @@ use App\Controller\AbstractController;
 
 class LoginController extends AbstractController
 {
-
     public function index()
     {
         $this->load('template/login', []);
@@ -15,12 +14,21 @@ class LoginController extends AbstractController
 
     public function access()
     {
-        $this->validade();
+        $this->validade();        
+        if(count($this->error) > 0 ){            
+            header("Location: /login");
+            return false;
+        }
+        
         $this->load('template/login', []);
     }
 
-    private function validade(){
+    private function validade():void
+    {
+        if(!$this->request->getInput('nm_email')) 
+            $this->setError('Informe o Campo E-mail');
         
+        if(!$this->request->getInput('nm_senha')) 
+            $this->setError('Informe o Campo Senha');
     }
-    
 }

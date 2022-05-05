@@ -69,7 +69,7 @@ class Router
             unset($xUri[1]);
         } else {
             $group = '/';
-            $urlAtual = '/' . $xUri[0];
+            $urlAtual = '/' . implode('/', $xUri);
             unset($xUri[0]);
         }
 
@@ -77,11 +77,16 @@ class Router
 
         //dd($routes[$method_atual] ,false);
         try {
-
+          
             foreach ($routes[$method_atual][$group] as $c => $v) {
                 $x = substr($c, 1) == '' ? '/' : '/' . reset(explode('/', substr($c, 1)));
+                
+                //pode ser implementado aqui a espera do parametro na urel {param}
 
-                if ($x == $urlAtual) {
+
+                if ($c != $urlAtual) {
+                    continue;
+                }else{
 
                     if ($v[0] instanceof Closure) {
                         $v[0]();
@@ -105,11 +110,12 @@ class Router
 
                         if (!method_exists($class, $method)) {
 
-                            (new \App\Controller\MessageController)->message404(
+                           return  (new \App\Controller\MessageController)->message404(
                                 'Methodo não encontrado',
                                 'Não foi encvontrado o método (' . $method . ') na clesse (' . $class . ')',
                                 404
                             );
+                            
                             return;
                         }
 
@@ -124,12 +130,13 @@ class Router
             throw new Exception($e->getMessage(), $e->getCode());
         }
 
-
+        exit;
         (new \App\Controller\MessageController)->message404(
             'Rota não encontrada',
             'A rota não existe!',
             500
         );
+        
 
         return false;
     }
