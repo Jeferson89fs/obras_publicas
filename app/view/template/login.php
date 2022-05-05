@@ -8,34 +8,35 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{BASE_HTTP}}fontawesome/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="<?=BASE_HTTP?>fontawesome-free/css/all.min.css">
   <!-- icheck bootstrap -->
-  <link rel="stylesheet" href="{{BASE_HTTP}}plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <link rel="stylesheet" href="<?=BASE_HTTP?>plugins/icheck-bootstrap/icheck-bootstrap.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="{{BASE_HTTP}}dist/css/adminlte.css">
+  <link rel="stylesheet" href="<?=BASE_HTTP?>dist/css/adminlte.css">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo ">
-    <a href="{{BASE_HTTP}}">
+    <a href="<?=BASE_HTTP?>">
         <b class="">SISTEMAS DE OBRAS</b>        
     </a>
   </div>  
   <div class="card">
     <div class="card-body login-card-body">
       <p class="login-box-msg">Faça login para iniciar sua sessão</p>
-
+    
       <form action="/login/access" method="POST">
         <div class="input-group mb-3">        
-          <input type="email" class="form-control" placeholder="E-mail" name="nm_email" value="">
+          <input type="email" class="form-control" placeholder="E-mail" name="nm_email" <?=$_REQUEST['nm_email']?>>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
             </div>
           </div>
+          
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Senha"  name="nm_senha" >
+          <input type="password" class="form-control" placeholder="Senha"  name="nm_senha" <?=$_REQUEST['nm_senha']?> >
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>

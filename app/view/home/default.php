@@ -1,8 +1,4 @@
-{% extends "template/template.php" %}
-
-{% block title %}teste{%endblock%}
-
-{% block body %}
+<? require_once ('/app/view/template/template.php')?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -39,4 +35,3 @@
   </section>
   <!-- /.content -->
 </div>
-{% endblock %}

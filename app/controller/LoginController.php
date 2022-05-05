@@ -16,7 +16,7 @@ class LoginController extends AbstractController
     {
         $this->validade();        
         if(count($this->error) > 0 ){            
-            header("Location: /login");
+            header("Location: /login",false);
             return false;
         }
         

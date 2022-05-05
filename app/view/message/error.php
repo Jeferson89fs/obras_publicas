@@ -1,8 +1,5 @@
-{% extends "template/template.php" %}
+<? require_once ('/app/view/template/template.php')?>
 
-{% block title %}teste{%endblock%}
-
-{% block body %}
 <div class="content-wrapper">
 
     <div class="alert alert-danger d-flex align-items-center" role="alert">
@@ -14,5 +11,3 @@
         </div>
     </div>
 </div>
-
-{% endblock %}
