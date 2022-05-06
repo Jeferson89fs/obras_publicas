@@ -1,4 +1,5 @@
-<? require_once ('/app/view/template/template.php')?>
+<? require_once(BASE_ROOT.'/app/view/template/template.php'); ?>
+                  
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->

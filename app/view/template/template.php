@@ -16,10 +16,9 @@
 
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-
-    <? require_once('/app/view/template/header.php')?>
-    <? require_once('/app/view/template/left.php')?>
-    <? require_once('/app/view/template/footer.php')?>
+    <? require_once(BASE_ROOT.'/app/view/template/header.php')?>
+    <? require_once(BASE_ROOT.'/app/view/template/left.php')?>
+    <? require_once(BASE_ROOT.'/app/view/template/footer.php')?>
     </div>
 </body>
 <script src="<?=BASE?>vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>

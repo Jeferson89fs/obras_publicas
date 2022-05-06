@@ -24,10 +24,9 @@
   <div class="card">
     <div class="card-body login-card-body">
       <p class="login-box-msg">Faça login para iniciar sua sessão</p>
-    
       <form action="/login/access" method="POST">
         <div class="input-group mb-3">        
-          <input type="email" class="form-control" placeholder="E-mail" name="nm_email" <?=$_REQUEST['nm_email']?>>
+          <input type="email" class="form-control" placeholder="E-mail" name="nm_email" value="<?=$_REQUEST['nm_email']?>" >
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -36,7 +35,7 @@
           
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Senha"  name="nm_senha" <?=$_REQUEST['nm_senha']?> >
+          <input type="password" class="form-control" placeholder="Senha"  name="nm_senha"  value="<?=$_REQUEST['nm_senha']?>">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
