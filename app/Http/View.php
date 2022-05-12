@@ -33,11 +33,6 @@ class View
     {
         $contentView = self::getContentView($view, $vars);
 
-        // $keys = array_map(function ($item) {
-        //     return  '{{' . $item . '}}';
-        // }, $keys);
-
-        //$contentView =  str_replace('<!--?', '<?' , $contentView);        
         echo $contentView;
     }
 }

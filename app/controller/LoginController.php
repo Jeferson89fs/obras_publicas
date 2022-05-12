@@ -9,6 +9,12 @@ use App\Http\View;
 
 class LoginController extends AbstractController
 {
+
+
+    public function teste($id){
+        dd($id);
+    }
+
     public function index()
     {
         $this->Errors = $_SESSION['errors'];
@@ -28,8 +34,13 @@ class LoginController extends AbstractController
         //          ]);
     }
 
+    public function register(){
+
+    }
+
     public function access()
     {
+      /*  
         $this->validade();
         if (count($this->Errors) > 0) {
             $_SESSION['errors'] = $this;
@@ -37,7 +48,8 @@ class LoginController extends AbstractController
             return false;
         }
 
-        $this->load('template/login', []);
+        //$this->load('template/login', []);
+        */
     }
 
     private function validade(): void

@@ -4,155 +4,226 @@ namespace App\Http;
 
 use Closure;
 use Exception;
-//roteador
-//gerencia as rotas
+use ReflectionFunction;
+
 class Router
 {
+    /**
+     * raiz do projeto
+     * @var string
+     */
+    private $url;
 
-    private $url = '';
+    /**
+     * prerfixo do projeto
+     * @var string
+     */
+    private $prefix;
 
-    private $prefixo = '';
+    /**
+     * frupo do projeto
+     * @var $group
+     */
+    private $group;
 
-    private $grupo = [];
-
-    //indice de rotas
+    /**
+     * inbdice de rotas
+     * @var array
+     */
     private $routes = [];
 
-    public function __construct($url, $prefixo = '')
+    /**
+     * @var request
+     */
+    private $Request;
+
+    public function __construct($url, $prefix = '')
     {
+        $this->Request = new Request;
         $this->url = $url;
-        $this->prefixo = $prefixo;
+        $this->prefix = $prefix;
 
         require_once("../app/config/Router.php");
-
-        $this->run();
-    }
-
-    public function group($grupo, $call)
-    {
-        $this->grupo = $grupo;
-        if ($call instanceof Closure) {
-            $x = $call();
-            $this->grupo = '/';
-        }
     }
 
 
     /**
-     * Método responsavel por adicionar a rota
+     * Method responsavel por definir um rota GET
      */
-    private  function addRoute($method, $route, $controller)
+    public function get(string $rota, $callMethod, $params = [])
     {
-        $this->routes[$method][$this->grupo ?? '/'][$route][] = $controller;
-
-        //$this->run();
+        return   $this->addRoute('GET', $rota, $callMethod, $params);
     }
 
-    private function is_group($method_atual, $xUri)
+
+    /**
+     * Method responsavel por definir um rota POST
+     */
+    public function post(string $rota, $callMethod, $params = [])
     {
-        return (isset($this->routes[$method_atual][(trim($xUri[0]) != '' ? $xUri[0] : '/')]));
+        return   $this->addRoute('POST', $rota, $callMethod, $params);
     }
 
-    private function run()
+    /**
+     * Method responsavel por definir um rota DELETE
+     */
+    public function delete(string $rota, $callMethod, $params = [])
+    {
+        return $this->addRoute('DELETE', $rota, $callMethod, $params);
+    }
+
+    /**
+     * Method responsavel por definir um rota PUT
+     */
+    public function put(string $rota, $callMethod, $params = [])
+    {
+        return  $this->addRoute('PUT', $rota, $callMethod, $params);
+    }
+
+
+
+    /**
+     * Método responsavel por adicionar a rota
+     * @var string $method
+     * @var string $rota
+     * @var mixed $callMethod
+     */
+    private function addRoute($method, $route, $callMethod, $params = [])
     {
 
-        $url = substr($_SERVER['HTTP_HOST'], 0);
-        $uri = substr($_SERVER['REQUEST_URI'], 1);
-        $method_atual = $_SERVER['REQUEST_METHOD'];
+        $params['variables'] = [];
+        $patnerVariable = '/{(.*?)}/';
+        
+        if(preg_match_all($patnerVariable , $route, $matches)){
+            $route = preg_replace($patnerVariable,'(.*?)',$route);
+            $params['variables'] = $matches[1];
+         
+        }
+        
+        $patternRoute = '/^' . str_replace('/', '\/', $route) . '$/';
 
-        $xUri = strlen($this->prefixo) ? explode($this->prefixo, $uri) : explode('/', $uri);
+        if ($callMethod instanceof Closure) {
+            $params['controller'] = $callMethod;
+            $callMethod();
+        } else if (is_string($callMethod)) {
 
-        if ($this->is_group($method_atual, $xUri)) {
-            $group =  trim($xUri[0]) != "" ? $xUri[0] : '/';
-            unset($xUri[0]);
-            $urlAtual = '/' . $xUri[1];
-            unset($xUri[1]);
-        } else {
-            $group = '/';
-            $urlAtual = '/' . implode('/', $xUri);
-            unset($xUri[0]);
+            $controllerMethod  = explode('@', $callMethod);
+            
+            // monta um array para chamar o methodo correto
+            $params['controller'] = [
+                    'method' => $method,
+                    'classe' => $controllerMethod[0],
+                    'metodo' => $controllerMethod[1],
+                    'params' => $params
+            ];
+ 
         }
 
-        $routes = $this->routes;
+        //adiciona a rota dentro d aclasse
+        $this->routes[$patternRoute][$method] = $params;
+        //dd($this->routes);
+    }
 
-        //dd($routes[$method_atual] ,false);
+    /**
+     * return Response
+     */
+    public function run()
+    {
+        
         try {
-          
-            foreach ($routes[$method_atual][$group] as $c => $v) {
-                $x = substr($c, 1) == '' ? '/' : '/' . reset(explode('/', substr($c, 1)));
-                
-                //pode ser implementado aqui a espera do parametro na urel {param}
 
+            $route = $this->getRoute();
 
-                if ($c != $urlAtual) {
-                    continue;
-                }else{
-
-                    if ($v[0] instanceof Closure) {
-                        $v[0]();
-                        exit;
-                    } else if (is_string(end($v))) {
-                        $controllerMethod  = explode('@', end($v));
-
-                        $class = $controllerMethod[0];
-                        $method = $controllerMethod[1];
-
-                        if (!isset($class) || !isset($method)) {
-                            (new \App\Controller\MessageController)->message404(
-                                'Dados Fornecedos incorretamente',
-                                'Classe e methodos não especificados corretamente',
-                                404
-                            );
-                            return;
-                        }
-
-                        $class =  'App\\Controller\\' . $class;
-
-                        if (!method_exists($class, $method)) {
-
-                           return  (new \App\Controller\MessageController)->message404(
-                                'Methodo não encontrado',
-                                'Não foi encvontrado o método (' . $method . ') na clesse (' . $class . ')',
-                                404
-                            );
-                            
-                            return;
-                        }
-
-                        //demais parametros da url sao parametros
-                        //foi apagado o indice 0 e 1 que é o grupo e o controller                            
-                        $arrParam =  $xUri;
-                        call_user_func_array([new $class, $method], $arrParam);
-                    }
-                }
+            if(!isset($route['controller'])){
+                throw new Exception('A URL não pode ser processada!', 500);
             }
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage(), $e->getCode());
-        }
+            
+            $args = [];
 
-        exit;
-        (new \App\Controller\MessageController)->message404(
-            'Rota não encontrada',
-            'A rota não existe!',
-            500
-        );
+            if(is_array($route['controller'])){
+                $class = $route['controller']['classe'];
+                $function = $route['controller']['metodo'];
+                $method = $route['controller']['method'];
+    
+                $class =  'App\\Controller\\' . $class;
+    
+                $Instancia = new $class;
+                $arrParam = [];
+               
+            if (!method_exists($class, $function)) {
+                return new Response(200 , 'Método não encontrado!');
+            }
+
+            foreach($route['controller']['params']['variables'] as $c => $v){
+                $arrParam[$v] = $route['variables'][$v];
+            }
+
+            
+            return new Response(200 , call_user_func_array([$Instancia, $function], $arrParam));
+
+            }
         
 
-        return false;
+            
+
+            //retornar uma stancia de Response
+
+            //throw new Exception('Pagina não encointrada', 404);
+
+        } catch (Exception $e) {            
+            return new Response($e->getCode(), $e->getMessage());
+        }
     }
 
-    public function get($route, $controller)
+    /**
+     * método responsavel por retornar a uri * desconciderando o profeixo e o grupo
+     * @return string
+     */
+    private function getUri()
     {
-        $this->addRoute('GET', $route, $controller);
+        $uri = $this->Request->getUri();
+
+        $xUri = strlen($this->prefix) ? explode($this->prefix, $uri) : [$uri];
+
+        //adicionar para remover o grupo
+        //$xUri = strlen($this->group) ? explode($this->group, $uri) : [$uri];
+
+        return end($xUri);
     }
 
-    public function post($route, $controller)
+    /**
+     * Retorna os dados rota atual
+     * @return array
+     */
+    private function getRoute()
     {
-        $this->addRoute('POST', $route, $controller);
-    }
+        $uri = $this->getUri();
 
-    public function delete($route, $controller)
-    {
-        $this->addRoute('DELETE', $route, $controller);
+        $httpMethod = $this->Request->getHttpMethod();
+        
+        foreach ($this->routes as $pattern => $methods) {
+            
+            if (preg_match($pattern, $uri, $metches)) {
+                if ($methods[$httpMethod]) {
+                    //remove a primeira posicao
+                    unset($metches[0]);
+                    
+                    //monta um arrau com as chaves
+                    $keys = $methods[$httpMethod]['variables'];
+                    
+                    //monta um array com as chaves e o metches
+                    $methods[$httpMethod]['variables'] = array_combine($keys, $metches);
+                    $methods[$httpMethod]['variables']['request'] = $this->Request;
+
+                    return $methods[$httpMethod];
+                    
+                }
+                
+                throw new Exception('Método não permitido', '405');  
+            }  
+            
+        }
+
+        throw new Exception('Url não Encontrada', '404');
     }
 }

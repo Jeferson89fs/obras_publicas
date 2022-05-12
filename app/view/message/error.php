@@ -1,4 +1,4 @@
-<? require_once ('/app/view/template/template.php')?>
+<? require_once(BASE_ROOT . 'app/view/template/template.php') ?>
 
 <div class="content-wrapper">
 
@@ -7,7 +7,7 @@
             <use xlink:href="#exclamation-triangle-fill" />
         </svg>
         <div>
-            {{msg_error}}
+
         </div>
     </div>
 </div>
