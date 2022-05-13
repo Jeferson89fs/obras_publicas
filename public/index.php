@@ -9,4 +9,5 @@ $prefixo = '';
 //(new \App\Http\Response(200, 'Olá mundo'))->sendResponse();
 
 $objRoute = new App\Http\Router(BASE_HTTP, $prefixo); //adiciona as rotas
+
 $objRoute->run()->sendResponse(); //verifica rota atual

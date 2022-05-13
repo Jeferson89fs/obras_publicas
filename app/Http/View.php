@@ -33,6 +33,6 @@ class View
     {
         $contentView = self::getContentView($view, $vars);
 
-        echo $contentView;
+        return $contentView;
     }
 }

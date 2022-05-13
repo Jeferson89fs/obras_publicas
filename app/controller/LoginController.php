@@ -13,6 +13,9 @@ class LoginController extends AbstractController
 
     public function index()
     {
+
+        
+
         $this->Errors = $_SESSION['errors'];
         unset($_SESSION['errors']);
 
@@ -22,7 +25,7 @@ class LoginController extends AbstractController
         //echo '@@@';
         //dd($this->Errors->find('nm_email'));
         
-        View::render('template/login', [$_REQUEST]);
+        return View::render('template/login', [$_REQUEST]);
 
         // $this->load('template/login', [
         //                     'teste' => 'teste',    
@@ -31,7 +34,7 @@ class LoginController extends AbstractController
     }
 
     public function register(){
-
+        return View::render('template/login', [$_REQUEST]);
     }
 
     public function access()

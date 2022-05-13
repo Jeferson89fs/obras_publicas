@@ -86,6 +86,8 @@ class Router
         if ($call instanceof Closure) {
           $call();               
         }
+        
+        $this->group ='/'; 
 
     }
 
@@ -138,6 +140,7 @@ class Router
         try {
 
             $route = $this->getRoute();
+            
 
             if (!isset($route['controller'])) {
                 throw new Exception('A URL não pode ser processada!', 500);
@@ -162,7 +165,6 @@ class Router
                 foreach ($route['controller']['params']['variables'] as $c => $v) {
                     $arrParam[$v] = $route['variables'][$v];
                 }
-
 
                 return new Response(200, call_user_func_array([$Instancia, $function], $arrParam));
             } else {
@@ -193,13 +195,17 @@ class Router
         $xUri = strlen($this->prefix) ? explode($this->prefix, $uri) : [$uri];
 
         //adicionar para remover o grupo
-
-        dd($this);
-        $xUri = strlen($this->Routes[0]) ? explode($this->Routes[0], $uri) : [$uri];
+        $ex = explode('/',$uri);
+        unset($ex[0]);
         
-        dd($xUri);
+        $grupo = $ex[1] ?? '/';
+        
 
-        return end($xUri);
+        if(isset($this->routes[$grupo])){
+            $xUri = strlen($grupo) ? explode($grupo, $uri) : [$uri];
+        }   
+
+        return end($xUri) ?? '/';
     }
 
     /**
@@ -208,19 +214,16 @@ class Router
      */
     private function getRoute()
     {
-        dd($this->getUri());
+        
         $uri = $this->getUri();
-
+        
         $httpMethod = $this->Request->getHttpMethod();
-
+        
         foreach ($this->routes as $group => $Routes) {
-            
             foreach ($Routes as $pattern => $methods) {
-                dd($uri);
                 if (preg_match($pattern, $uri, $metches)) {
 
                     if ($methods[$httpMethod]) {
-                        //dd($metches);
                         //remove a primeira posicao
                         unset($metches[0]);
 
@@ -230,15 +233,15 @@ class Router
                         //monta um array com as chaves e o metches
                         $methods[$httpMethod]['variables'] = array_combine($keys, $metches);
                         $methods[$httpMethod]['variables']['request'] = $this->Request;
-
+                        
                         return $methods[$httpMethod];
                     }
 
                     throw new Exception('Método não permitido', '405');
                 }
             }
-
-            throw new Exception('Url não Encontrada', '404');
         }
+
+        throw new Exception('Url não Encontrada', '404');
     }
 }

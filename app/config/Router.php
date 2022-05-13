@@ -6,9 +6,9 @@ $this->group('admin', function(){
 });
 
 
-$this->get('/', function () {
-    echo 'aquii';
-});
+// $this->get('/', function () {
+//     echo 'aquii';
+// });
 
 //$this->get('/',                 'HomeController@index');
 

@@ -11,8 +11,7 @@ class HomeController extends AbstractController
 
     public function index()
     {
-        $args = [];
-        return View::render('home/default', $args);        
+        return View::render('home/default', $_REQUEST);        
     }
     
 }
