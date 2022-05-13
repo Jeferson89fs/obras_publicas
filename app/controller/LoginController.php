@@ -11,10 +11,6 @@ class LoginController extends AbstractController
 {
 
 
-    public function teste($id){
-        dd($id);
-    }
-
     public function index()
     {
         $this->Errors = $_SESSION['errors'];

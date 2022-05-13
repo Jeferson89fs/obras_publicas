@@ -1,18 +1,16 @@
 <?php
 
 
-/*$this->group('admin', function(){    
-    $this->get('/',             'HomeController@index_admin');
-}); */
+$this->group('admin', function(){    
+    $this->get('/', 'HomeController@index');
+});
 
 
-// $this->get('/',                 function () {
-//     echo 'aa';
-// });
+$this->get('/', function () {
+    echo 'aquii';
+});
 
-$this->get('/',                 'HomeController@index');
-
-$this->get('/login/{id}',       'LoginController@teste');
+//$this->get('/',                 'HomeController@index');
 
 $this->get('/login',            'LoginController@index');
 $this->get('/login/register',   'LoginController@register');
