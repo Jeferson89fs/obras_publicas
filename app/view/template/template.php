@@ -12,15 +12,12 @@
     <link rel="stylesheet" href="/public/fontawesome-free/css/all.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="/public/css/adminlte.min.css">
+    <!-- my style -->
+    <link rel="stylesheet" href="/public/css/style.css">
 </head>
 
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-    <? require_once(BASE_ROOT.'/app/view/template/header.php')?>
-    <? require_once(BASE_ROOT.'/app/view/template/left.php')?>
-    <? require_once(BASE_ROOT.'/app/view/template/footer.php')?>
+        <? require_once(BASE_ROOT.'/app/view/template/header.php')?>
+        <? require_once(BASE_ROOT.'/app/view/template/left.php')?>   
     </div>
-</body>
-<script src="<?=BASE?>vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
-
-</html>

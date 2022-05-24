@@ -1,5 +1,5 @@
 <? require_once(BASE_ROOT.'/app/view/template/template.php'); ?>
-                  
+<div id="app">                  
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -7,7 +7,7 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Início</h1>
+          <h1>{{TITULO}}</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
@@ -24,24 +24,24 @@
   <section class="content">
     <div class="container-fluid">
       <div class="row">
-
-        <div class="col-md-12">
-          
+        <div class="col-md-12">            
+             <a href="/menu/create" class="btn btn-primary" id="btn_cadastrar">Cadastrar</a>
         </div>
-
         <!-- /.col -->
       </div>
       <!-- /.row -->
-    </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.container-fluid -->
   </section>
   <!-- /.content -->
+</div>
 </div>
 <? require_once(BASE_ROOT.'/app/view/template/footer.php'); ?>
 <script>
     options = {
         el : '#app',
         data : {
-            TITULO : 'Início'         
+            TITULO : 'Cadastro de Menus'         
         },
         methods : {}
     }

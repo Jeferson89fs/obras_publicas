@@ -34,6 +34,7 @@ class Conexao{
         $this->setConection();
     }
 
+    
     private function setConection(){
         try{
             if (!isset(self::$conection)) {

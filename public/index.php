@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\DB;
 
 session_start();
 require_once("../vendor/autoload.php");
@@ -7,11 +8,13 @@ require_once("../app/config/config.php");
 require_once("../app/functions/functions.php");
 $prefixo = '';
 
-// use App\Model\Conexao;
+
 // $Conexao = new Conexao();
 // $connection = $Conexao->getConnection();
 // $res = $connection->prepare("select * from public.usuario");
 // $res->execute();
+
+//$x = (new DB)->table('pessoa')->insert();
 
 
 // $dados = $res->fetchAll(PDO::FETCH_CLASS);
