@@ -21,11 +21,15 @@ class MenuController extends AbstractController
     {
 
         $Menu = new Menu();
-        $Menu = $Menu->find(2);
+        $Menu = $Menu->find(1);
+
+        dd($Menu->dd());
 
         $x = $Menu
         ->where('menunome',   '=' , '1')        
-        ->orWhere('menunome', 'like' , '%2%')
+        ->orWhere('menunome', 'like' , '%2%')        
+        ->limit(10)
+        ->order('menunome' , '')
         ->get();
         //dd($x );
 

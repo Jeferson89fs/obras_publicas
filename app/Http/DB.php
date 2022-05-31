@@ -11,6 +11,8 @@ class DB
 {
     private $conection;
 
+    private $schema = 'public';
+
     private $table;
 
     private $model;
@@ -20,6 +22,18 @@ class DB
     private $sequence = '';
 
     private  $where = [];
+
+    private  $order = [];
+    
+    private  $limit;
+
+    private  $paginate;
+
+    private $Query;
+
+    public function getQuery(){
+        return $this->Query;
+    }
 
 
     /**
@@ -39,7 +53,8 @@ class DB
 
     public function __construct()
     {
-        $this->conection = (new Conexao)->getConnection();
+        $this->conection = (new Conexao)->getConnection();        
+        $this->table = $this->model;
     }
 
     public function schema($schema)
@@ -57,6 +72,18 @@ class DB
     public function table($table)
     {
         $this->table = $table;
+        return $this;
+    }
+
+    public function limit($limit)
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    public function order($order, $type='DESC')
+    {
+        $this->order[] = [$order, $type];
         return $this;
     }
 
@@ -88,11 +115,11 @@ class DB
         return $this;
     }
 
-    public function execute($query, $params = [])
+    public function execute($Query, $params = [])
     {
         try {
             $this->conection->beginTransaction();
-            $Statement = $this->conection->prepare($query);
+            $Statement = $this->conection->prepare($Query);
             $Statement->execute($params);
             $this->conection->commit();
 
@@ -105,8 +132,8 @@ class DB
 
     public function getNextVal()
     {
-        $query = " select nextval('" . $this->getSequence() . "') as id ";
-        $Statement = $this->execute($query);
+        $this->Query = " select nextval('" . $this->getSequence() . "') as id ";
+        $Statement = $this->execute($this->Query);
         $result = $Statement->fetch(\PDO::FETCH_OBJ);
         return $result->id;
     }
@@ -120,9 +147,9 @@ class DB
         $binds  = array_pad([], count($fields), '?');
         $params = array_values($values);
 
-        $query = " insert into " . $this->table . " (" . implode(',', $fields) . " ) values(" . implode(',', $binds) . ")";
+        $this->Query = " insert into " . $this->table . " (" . implode(',', $fields) . " ) values(" . implode(',', $binds) . ")";
 
-        $this->execute($query, $params);
+        $this->execute($this->Query, $params);
         return $this->conection->lastInsertId();
     }
 
@@ -135,19 +162,19 @@ class DB
         $binds  = array_pad([], count($fields), '?');
         $params = array_values($values);
 
-        $query = " update  " . $this->schema . '.' . $this->table . " set ";
+        $this->Query = " update  " . $this->schema . '.' . $this->table . " set ";
 
-        $queryCol = [];
+        $this->QueryCol = [];
         foreach ($fields as $c => $v) {
-            $queryCol[] = "\n " . $v . " = " . $binds[$c];
+            $this->QueryCol[] = "\n " . $v . " = " . $binds[$c];
         }
 
-        $query .= implode(',', $queryCol);
+        $this->Query .= implode(',', $this->QueryCol);
 
-        $query .= " where " . $this->primaryKey . " = " . $this->model->{$this->primaryKey};
+        $this->Query .= " where " . $this->primaryKey . " = " . $this->model->{$this->primaryKey};
 
         try {
-            $this->execute($query, $params);
+            $this->execute($this->Query, $params);
             return true;
         } catch (Exception $e) {
             return false;
@@ -156,9 +183,9 @@ class DB
 
     public function delete()
     {
-        $query = " delete from  " . $this->schema . '.' . $this->table . " where  " . $this->primaryKey . " =  ? ";
+        $this->Query = " delete from  " . $this->schema . '.' . $this->table . " where  " . $this->primaryKey . " =  ? ";
         try {
-            $this->execute($query, [$this->model->{$this->primaryKey}]);
+            $this->execute($this->Query, [$this->model->{$this->primaryKey}]);
             return true;
         } catch (Exception $e) {
             return false;
@@ -178,11 +205,11 @@ class DB
 
             $boolean = count($value) > 1 ? 'OR' : 'AND';
 
-            $query = [];
+            $this->Query = [];
             foreach ($value as $c => $v) {
-                $query[] = $boolean . ' ' . $column . ' ' . $operator . ' \'' . $v.'\'';
+                $this->Query[] = $boolean . ' ' . $column . ' ' . $operator . ' \'' . $v.'\'';
             }
-            return implode(' ', $query);
+            return implode(' ', $this->Query);
         }
 
         return  $boolean . ' ' . $column . ' ' . $operator . ' \'' . $value.'\'';
@@ -203,14 +230,50 @@ class DB
         return implode(' ', $Arrwhere);
     }
 
+    private function compileOrder(){
+        $QueryOrder = [];
+
+        if(count($this->order) == 0){
+            $QueryOrder[] = "1 DESC";
+        }else{
+            foreach($this->order as $ordem){
+                $QueryOrder[] = " $ordem[0]  $ordem[1]";
+            }
+        }
+
+        return $this->Query = " order by ".implode(', ',$QueryOrder);
+    }
+
+    private function compileLimit(){
+        if($this->limit)
+            return $this->Query = " limit ".$this->limit;
+
+    }
+
+    public function QueryBuilder($colmns="*"){
+        $where = $this->compileWhere();
+        $order = $this->compileOrder();
+        $limit = $this->compileLimit();
+
+        $sql  = " select {$colmns}";
+        $sql .= " from {$this->schema}.{$this->table}";
+        $sql .= " where 1=1 ";
+
+        $this->Query  =  $sql;
+        $this->Query .=  $where;
+        $this->Query .=  $order;
+        $this->Query .=  $limit;
+        $this->Query .= "\n";
+
+        //echo $this->Query ."\n";
+
+    }
+
     public function select($colmns = '*')
     {
-        $where = $this->compileWhere();
+        $this->QueryBuilder($colmns);
 
-        $query = "select {$colmns} from {$this->schema}.{$this->table} where 1=1 " . $where;
-
-        echo $query;
-        $Statement = $this->execute($query);
+        $Statement = $this->execute($this->Query);
 
         return  $Statement->fetchAll(PDO::FETCH_CLASS, static::class);
     }
