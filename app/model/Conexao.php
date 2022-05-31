@@ -38,7 +38,9 @@ class Conexao{
     private function setConection(){
         try{
             if (!isset(self::$conection)) {
-                return self::$conection = new PDO($this->driver.':host='.$this->host.';dbname='.$this->name_database.';port='.$this->port, $this->username, $this->password);
+                $con  = new PDO($this->driver.':host='.$this->host.';dbname='.$this->name_database.';port='.$this->port, $this->username, $this->password);
+                $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                return self::$conection = $con;
             }
 
             return self::$conection;

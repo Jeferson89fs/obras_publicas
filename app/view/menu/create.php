@@ -84,7 +84,7 @@
 
           <div class="card-footer">
             <button type="button" class="btn btn-default mr-3">Cancelar</button>
-            <button type="button" class="btn btn-info ml-3">Cadastrar</button>
+            <button type="button" @click="salvar()" class="btn btn-info ml-3">Cadastrar</button>
           </div>
         </form>
 
@@ -96,15 +96,40 @@
   </div>
 </div>
 <? require_once(BASE_ROOT . '/app/view/template/footer.php'); ?>
+
 <script>
   options = {
     el: '#app',
     data: {
       TITULO: 'Cadastro de Menus'
     },
-    methods: {}
+    methods: {
+      salvar: function() {
+        let form = document.querySelector('#frmMenu');
+        var formData = new FormData(form);
+        
+        var myHeaders = new Headers();
+         
+        var myInit = { method: 'POST',
+               headers: myHeaders,
+               body: formData,            
+               
+               mode: 'cors',
+               cache: 'default' };
+
+        fetch(form.getAttribute('action'), myInit)
+          .then((response) => response.json())
+          .then((data) => {
+            //console.log("Success:", data);
+          })
+          .catch((error) => {
+            console.error("Error:", error)
+          })
+      }
+
+    }
   }
 
+
   const vm = new Vue(options);
-  console.log(vm);
 </script>

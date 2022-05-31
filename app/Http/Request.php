@@ -21,6 +21,13 @@ class Request
 
     public function __construct()
     {
+        
+        if($_SERVER['CONTENT_TYPE'] == 'application/json'){
+            foreach((array) json_decode(file_get_contents('php://input', "r")) as $prop => $value){
+                $_POST[$prop] = $value;
+            }
+        }
+        
         $this->queryParameters = $_GET;
         $this->postVars = $_POST ?? [];
         $this->headers = getallheaders();

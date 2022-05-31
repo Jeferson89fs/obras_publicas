@@ -12,9 +12,7 @@ class LoginController extends AbstractController
 
 
     public function index()
-    {
-
-        
+    {   
 
         $this->Errors = $_SESSION['errors'];
         unset($_SESSION['errors']);

@@ -14,6 +14,11 @@
     <link rel="stylesheet" href="/public/css/adminlte.min.css">
     <!-- my style -->
     <link rel="stylesheet" href="/public/css/style.css">
+
+    <script src="<?=BASE?>public/js/jquery.min.js"></script>
+    <script src="<?=BASE?>public/js/bootstrap.min.js"></script>
+    <script src="<?=BASE?>public/js/vue_desenv.js"></script>
+
 </head>
 
 <body class="hold-transition sidebar-mini">
