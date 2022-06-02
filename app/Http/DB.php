@@ -24,17 +24,17 @@ class DB
     private  $where = [];
 
     private  $order = [];
-    
+
     private  $limit;
 
     private  $paginate;
 
     private $Query;
 
-    public function getQuery(){
+    public function getQuery()
+    {
         return $this->Query;
     }
-
 
     /**
      * All of the available clause operators.
@@ -50,10 +50,9 @@ class DB
         'not similar to', 'not ilike', '~~*', '!~~*',
     ];
 
-
     public function __construct()
     {
-        $this->conection = (new Conexao)->getConnection();        
+        $this->conection = (new Conexao)->getConnection();
         $this->table = $this->model;
     }
 
@@ -81,7 +80,7 @@ class DB
         return $this;
     }
 
-    public function order($order, $type='DESC')
+    public function order($order, $type = 'DESC')
     {
         $this->order[] = [$order, $type];
         return $this;
@@ -109,9 +108,9 @@ class DB
         return $this;
     }
 
-    public function where($filter, $value, $operator = '=', $boolean='AND')
+    public function where($filter, $value, $operator = '=', $boolean = 'AND')
     {
-        $this->where[]  = [$filter, $value, $operator,$boolean];
+        $this->where[]  = [$filter, $value, $operator, $boolean];
         return $this;
     }
 
@@ -198,21 +197,21 @@ class DB
         return in_array($operador, $this->operators);
     }
 
-    public function structWhere($column, $operator, $value,$boolean='AND')
+    public function structWhere($column, $operator, $value, $boolean = 'AND')
     {
-        
+
         if (is_array($value)) {
 
             $boolean = count($value) > 1 ? 'OR' : 'AND';
 
             $this->Query = [];
             foreach ($value as $c => $v) {
-                $this->Query[] = $boolean . ' ' . $column . ' ' . $operator . ' \'' . $v.'\'';
+                $this->Query[] = $boolean . ' ' . $column . ' ' . $operator . ' \'' . $v . '\'';
             }
             return implode(' ', $this->Query);
         }
 
-        return  $boolean . ' ' . $column . ' ' . $operator . ' \'' . $value.'\'';
+        return  $boolean . ' ' . $column . ' ' . $operator . ' \'' . $value . '\'';
     }
 
     public function compileWhere()
@@ -224,33 +223,35 @@ class DB
                 throw new Exception("Operador inválido");
             }
 
-            $Arrwhere[] = $this->structWhere($where[0], $where[2], $where[1],$where[3]);
+            $Arrwhere[] = $this->structWhere($where[0], $where[2], $where[1], $where[3]);
         }
 
         return implode(' ', $Arrwhere);
     }
 
-    private function compileOrder(){
+    private function compileOrder()
+    {
         $QueryOrder = [];
 
-        if(count($this->order) == 0){
+        if (count($this->order) == 0) {
             $QueryOrder[] = "1 DESC";
-        }else{
-            foreach($this->order as $ordem){
+        } else {
+            foreach ($this->order as $ordem) {
                 $QueryOrder[] = " $ordem[0]  $ordem[1]";
             }
         }
 
-        return $this->Query = " order by ".implode(', ',$QueryOrder);
+        return $this->Query = " order by " . implode(', ', $QueryOrder);
     }
 
-    private function compileLimit(){
-        if($this->limit)
-            return $this->Query = " limit ".$this->limit;
-
+    private function compileLimit()
+    {
+        if ($this->limit)
+            return $this->Query = " limit " . $this->limit;
     }
 
-    public function QueryBuilder($colmns="*"){
+    public function QueryBuilder($colmns = "*")
+    {
         $where = $this->compileWhere();
         $order = $this->compileOrder();
         $limit = $this->compileLimit();
@@ -264,17 +265,14 @@ class DB
         $this->Query .=  $order;
         $this->Query .=  $limit;
         $this->Query .= "\n";
-
-        //echo $this->Query ."\n";
-
     }
 
     public function select($colmns = '*')
     {
-        $this->QueryBuilder($colmns);
+        $this->QueryBuilder($colmns);       
 
         $Statement = $this->execute($this->Query);
-
-        return  $Statement->fetchAll(PDO::FETCH_CLASS, static::class);
+        
+        return  $Statement->fetchAll(PDO::FETCH_CLASS, $this->model);
     }
 }

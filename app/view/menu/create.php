@@ -22,6 +22,7 @@
 
     <!-- Main content -->
     <section class="content">
+      <? dd($_REQUEST, false)?>
       <div class="container-fluid">
         <div class="row">
           <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -84,7 +85,7 @@
 
           <div class="card-footer">
             <button type="button" class="btn btn-default mr-3">Cancelar</button>
-            <button type="button" @click="salvar()" class="btn btn-info ml-3">Cadastrar</button>
+            <button type="submit" class="btn btn-info ml-3">Cadastrar</button>
           </div>
         </form>
 

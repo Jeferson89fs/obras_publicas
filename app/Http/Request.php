@@ -32,6 +32,7 @@ class Request
         $this->postVars = $_POST ?? [];
         $this->headers = getallheaders();
         $this->httpMethod = $_SERVER['REQUEST_METHOD'];
+        
         $this->uri = $_SERVER['REQUEST_URI']; // (substr($_SERVER['REQUEST_URI'], strlen($_SERVER['REQUEST_URI']) - 1)) == '/' ? substr($_SERVER['REQUEST_URI'], 0, -1) : $_SERVER['REQUEST_URI'];
     }
 
@@ -57,6 +58,12 @@ class Request
         return $this->httpMethod;
     }
 
+
+    public function setHttpMethod($httpMethod)
+    {
+        $this->httpMethod = $httpMethod;
+    }
+
     /**
      * Get the value of httpRequest
      */
@@ -71,6 +78,16 @@ class Request
     public function getUri()
     {
         return $this->uri;
+    }
+
+    /**
+     * setUri function
+     * @param [type] $uri
+     * @return void
+     */
+    public function setUri($uri)
+    {
+        $this->uri = $uri;
     }
 
     /**
@@ -95,5 +112,49 @@ class Request
     public function getHeaders()
     {
         return $this->headers;
+    }
+
+    private function required($valor=''){
+        return trim($valor) != '';
+    }
+
+    private function validateColumn($valor, $rules){
+        $arrRules = explode('|', $rules);
+        $errors = [];
+        
+        foreach($arrRules as $c => $v){
+            $pos = strripos($v,':');
+            
+            //se nao tem
+            if($pos === false){                
+                if(method_exists($this, $v)){                    
+                    $errors[] = $this->{$v}($valor);
+                }else{
+                    throw new Exception("Validação não disponível",500);
+                }
+            }else{
+                //dd($pos);
+            }                        
+        }
+
+        //dd($errors);
+    }
+
+    
+    /**
+     * Undocumented function
+     * Funcao responsável por validar os dados
+     * @param [type] $rules
+     * @return 
+     */
+    public function validate($rules){
+        $errors = [];
+        if(count($rules)){
+            foreach($rules as  $collumn => $rules){
+                $errors[$collumn] = $this->validateColumn($this->getInput($collumn), $rules);                
+            }
+        }
+
+        return $errors;        
     }
 }

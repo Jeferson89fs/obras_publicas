@@ -7,6 +7,7 @@ use App\Http\View;
 use App\Controller\AbstractController;
 use App\Http\Response;
 use App\Model\Menu;
+use App\Http\Request;
 
 class MenuController extends AbstractController
 {
@@ -17,54 +18,13 @@ class MenuController extends AbstractController
     }
 
 
-    public function create()
+    public function create($params='')
     {
 
+        dd($_REQUEST, false);
         $Menu = new Menu();
-        $Menu = $Menu->find(1);
+        $Menu->find(1);
 
-        dd($Menu->dd());
-
-        $x = $Menu
-        ->where('menunome',   '=' , '1')        
-        ->orWhere('menunome', 'like' , '%2%')        
-        ->limit(10)
-        ->order('menunome' , '')
-        ->get();
-        //dd($x );
-
-
-//        dd($Menu , false);
-
-      
-
-       /* 
-        $Menu = new Menu();
-        $Menu->menunome = 'Menus 3';
-        $Menu->menudetalhamento = 'Cadastro de Menus 3';
-        $Menu->menucomando = 'menu 3';
-        $Menu->menupai = null;
-        $Menu->ordenacao = 1;
-        $Menu->ds_icone = null;
-        $Menu->nm_menu_acao = 'obras_publicas_menu3';
-        $Menu->create();
-
-            
-        $Menu = new Menu();
-        $Menu->menunome = 'Menus 4';
-        $Menu->menudetalhamento = 'Cadastro de Menus 4';
-        $Menu->menucomando = 'menu 4';
-        $Menu->menupai = null;
-        $Menu->ordenacao = 1;
-        $Menu->ds_icone = null;
-        $Menu->nm_menu_acao = 'obras_publicas_menu4';
-        $Menu->create();
-*/
-
-        dd($Menu);
-        
-
-        
 
         return View::render('menu/create', $_REQUEST);
     }
@@ -74,7 +34,16 @@ class MenuController extends AbstractController
         $Menu = new Menu();
         $Menu->id = 'xx';
 
-        return json_encode(['teste' => 'teste']);
+        $errors =  $this->request->validate([
+            'menunome'     => 'required',
+            'menucomando'  => 'min:3|max:50|required',
+            'nm_menu_acao' => 'min:3|max:50|required'
+        ]);
+
+        $errors = ['teste' => 'teste error'];
+
+        return redirect('/menu/create',$errors );
+        //return json_encode(['teste' => 'teste']);
 
 
         //return View::render('menu/create', $_REQUEST);        

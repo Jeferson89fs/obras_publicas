@@ -22,13 +22,12 @@ class Model
 
     private  $atributes = [];
 
-    private  $result = [];
-
     public function __construct()
     {
         $this->db = (new DB);
         $this->table = $this->table;
-        $this->db->table($this->table);
+        $this->db->table($this->table);        
+        $this->db->model(static::class);
         $this->db->schema($this->schema);
     }
 
@@ -78,7 +77,7 @@ class Model
      * @param [type] $column
      * @param string $operator
      * @param [type] $value
-     * @return void
+     * @return this
      */
     public function orWhere($column, $operator = '=', $value)
     {
@@ -180,8 +179,8 @@ class Model
             ->primaryKey($this->primaryKey)
             ->where($this->primaryKey, $params_id, '=')
             ->select();
-            
-        return $this->fillObject($result[0]);
+        
+        return reset($result);
     }
 
     /** 
@@ -191,8 +190,6 @@ class Model
     public function get()
     {
         return $this->db->select();
-
-        //return $this->fillObject($result);
     }
 
     /**
@@ -200,8 +197,8 @@ class Model
      * Método responsavel por imprimir a query 
      * @return void
      */
-    public function dd(){        
-        //$this->db->QueryBuilder() ;
+    public function dd()
+    {
         dd($this->db->getQuery());
     }
 }

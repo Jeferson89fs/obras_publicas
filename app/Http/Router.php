@@ -43,7 +43,7 @@ class Router
         $this->url = $url;
         $this->prefix = $prefix;
 
-        require_once("../app/config/Router.php");
+        require("../app/config/Router.php");
     }
 
 
@@ -134,9 +134,8 @@ class Router
     /**
      * return Response
      */
-    public function run()
+    public function run(array $arrParam=[])
     {
-
         try {
 
             $route = $this->getRoute();
@@ -156,7 +155,7 @@ class Router
                 $class =  'App\\Controller\\' . $class;
 
                 $Instancia = new $class;
-                $arrParam = [];
+                //$arrParam = [];
 
                 if (!method_exists($class, $function)) {
                     return new Response(200, 'Método não encontrado!');
@@ -165,7 +164,8 @@ class Router
                 foreach ($route['controller']['params']['variables'] as $c => $v) {
                     $arrParam[$v] = $route['variables'][$v];
                 }
-
+                
+                $_REQUEST['redirect'] = $arrParam;
                 return new Response(200, call_user_func_array([$Instancia, $function], $arrParam));
             } else {
                 return new Response(200, $route['controller']());
@@ -212,13 +212,22 @@ class Router
      * Retorna os dados rota atual
      * @return array
      */
+
+    public function redirect($uri,$httpMethod="GET", array $paramns=[]){        
+        $this->Request->setUri($uri);
+        $this->Request->setHttpMethod($httpMethod);                
+
+        return $this->run($paramns)->sendResponse();
+
+    }
+
     private function getRoute()
     {
         
         $uri = $this->getUri();
-        
+
         $httpMethod = $this->Request->getHttpMethod();
-        
+
         foreach ($this->routes as $group => $Routes) {
             foreach ($Routes as $pattern => $methods) {
                 if (preg_match($pattern, $uri, $metches)) {
