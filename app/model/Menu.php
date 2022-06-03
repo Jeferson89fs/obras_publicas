@@ -25,6 +25,12 @@ class Menu extends Model{
 
     protected $hidden = [];
 
+    public function getMessages(){
+        return [
+                'menunome.required' => 'O conteudo do texto está sendo modificado :attribute :value'
+        ];
+    }
+
  
 
   

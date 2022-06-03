@@ -16,6 +16,8 @@ class Request
     private $queryParameters = [];
 
     private $postVars = [];
+    
+    private $requestVars = [];
 
     private $headers = [];
 
@@ -27,9 +29,10 @@ class Request
                 $_POST[$prop] = $value;
             }
         }
-        
+          
         $this->queryParameters = $_GET;
         $this->postVars = $_POST ?? [];
+        $this->requestVars = $_REQUEST ?? [];
         $this->headers = getallheaders();
         $this->httpMethod = $_SERVER['REQUEST_METHOD'];
         
@@ -40,6 +43,10 @@ class Request
     {
         if ($this->postVars[$nm_campo]) {
             return $this->postVars[$nm_campo];
+        }
+
+        if ($this->requestVars[$nm_campo]) {
+            return $this->requestVars[$nm_campo];
         }
     }
 
@@ -114,32 +121,69 @@ class Request
         return $this->headers;
     }
 
-    private function required($valor=''){
-        return trim($valor) != '';
+    //'O campo :atributte é obrigató'
+    protected function messageValidators($validator){
+        switch($validator){
+            case 'required' :  return ' O campo :attribute é obrigatório!';             
+            case 'max'      : return ' A quantidade de caracteres deve ser no máximo :value para o campo :attribute!'; 
+            case 'min'      : return ' A quantidade de caracteres deve ser no mínimo :value para o campo :attribute!';             
+        }
     }
 
-    private function validateColumn($valor, $rules){
+    private function required($valor=''){        
+        return trim($valor) == '' ? $this->messageValidators('required') : false;
+    }
+
+    private function min($valor,$validator){        
+        return strlen($valor) < $validator  ? $this->messageValidators('min') : false;;
+    }
+
+    private function max($valor, $validator){
+        return strlen($valor) > $validator  ? $this->messageValidators('max') : false;;
+    }
+
+    private function validateColumn($collumn, $rules){
+        $value = $this->getInput($collumn);
         $arrRules = explode('|', $rules);
         $errors = [];
-        
+        $paramns = [];
+
         foreach($arrRules as $c => $v){
             $pos = strripos($v,':');
-            
-            //se nao tem
-            if($pos === false){                
-                if(method_exists($this, $v)){                    
-                    $errors[] = $this->{$v}($valor);
+            $method = $pos ? substr($v, 0, $pos) :  $v;
+            $validator = $pos ? substr($v, ($pos+1)) : null;
+             
+            if(method_exists($this, $method)){
+                $errors[$collumn.'.'.$method] = $this->{$method}($value,$validator);
+
+                if(($errors[$collumn.'.'.$method]) == false){
+                    unset($errors[$collumn.'.'.$method]);
                 }else{
-                    throw new Exception("Validação não disponível",500);
+                    $paramns[$collumn.'.'.$method] =  compact('validator','value','collumn','method');
                 }
+
             }else{
-                //dd($pos);
-            }                        
+                throw new Exception("Validação não disponível",500);
+            }     
         }
 
-        //dd($errors);
+        return [$errors, $paramns];
     }
 
+    private function handleMessages($errors, $Messages=[],$paramns=[]){
+
+        $error = [];
+        foreach($errors as $chave => $rule){        
+            $param = $paramns[$chave][reset(array_keys($rule))];           
+            $rule[reset(array_keys($rule))] = $Messages[reset(array_keys($rule))] ?? $rule[reset(array_keys($rule))];
+            $rule[reset(array_keys($rule))] = str_replace(':attribute', $param['collumn'],   $rule[reset(array_keys($rule))]); 
+            $rule[reset(array_keys($rule))] = str_replace(':value',     $param['validator'], $rule[reset(array_keys($rule))]);            
+            
+            if($rule[reset(array_keys($rule))]) array_push($error, $rule);
+        }
+        
+        return $error;
+    }
     
     /**
      * Undocumented function
@@ -147,14 +191,18 @@ class Request
      * @param [type] $rules
      * @return 
      */
-    public function validate($rules){
+    public function validate($rules,$Messages= []){
         $errors = [];
+        $paramns = [];
         if(count($rules)){
             foreach($rules as  $collumn => $rules){
-                $errors[$collumn] = $this->validateColumn($this->getInput($collumn), $rules);                
+                list($errors[], $paramns[]) = $this->validateColumn($collumn, $rules);                
             }
         }
-
+        
+        $errors =$this->handleMessages($errors, $Messages,$paramns);
+        
+        //$Messages
         return $errors;        
     }
 }

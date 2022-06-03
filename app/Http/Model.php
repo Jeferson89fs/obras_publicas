@@ -201,4 +201,8 @@ class Model
     {
         dd($this->db->getQuery());
     }
+
+    public function getMessages(){
+        return [];
+    }
 }

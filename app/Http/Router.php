@@ -138,8 +138,7 @@ class Router
     {
         try {
 
-            $route = $this->getRoute();
-            
+            $route = $this->getRoute();            
 
             if (!isset($route['controller'])) {
                 throw new Exception('A URL não pode ser processada!', 500);
@@ -165,7 +164,7 @@ class Router
                     $arrParam[$v] = $route['variables'][$v];
                 }
                 
-                $_REQUEST['redirect'] = $arrParam;
+                $_REQUEST['redirect'] = $arrParam;              
                 return new Response(200, call_user_func_array([$Instancia, $function], $arrParam));
             } else {
                 return new Response(200, $route['controller']());

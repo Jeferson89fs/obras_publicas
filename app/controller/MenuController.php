@@ -18,13 +18,10 @@ class MenuController extends AbstractController
     }
 
 
-    public function create($params='')
+    public function create($params = '')
     {
-
-        dd($_REQUEST, false);
         $Menu = new Menu();
         $Menu->find(1);
-
 
         return View::render('menu/create', $_REQUEST);
     }
@@ -32,17 +29,16 @@ class MenuController extends AbstractController
     public function store()
     {
         $Menu = new Menu();
-        $Menu->id = 'xx';
-
+        $Menu->id = 'xx';        
+        
         $errors =  $this->request->validate([
             'menunome'     => 'required',
-            'menucomando'  => 'min:3|max:50|required',
-            'nm_menu_acao' => 'min:3|max:50|required'
-        ]);
+            'menucomando'  => 'min:3|max:5|required',
+            'nm_menu_acao' => 'min:3|max:5|required'
+        ], $Menu->getMessages());
 
-        $errors = ['teste' => 'teste error'];
 
-        return redirect('/menu/create',$errors );
+        return redirect('/menu/create', $errors);
         //return json_encode(['teste' => 'teste']);
 
 
