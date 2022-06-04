@@ -30,6 +30,7 @@
           <!-- /.col -->
         </div>
 
+        <?//=Mensagens::getMenssagem($_REQUEST['redirect']['error'])?>
         <form id="frmMenu" method="POST" action="/menu/store">
 
           <div class="row">

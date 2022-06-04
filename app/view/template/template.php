@@ -25,4 +25,4 @@
     <div class="wrapper">
         <? require_once(BASE_ROOT.'/app/view/template/header.php')?>
         <? require_once(BASE_ROOT.'/app/view/template/left.php')?>   
-    </div>
+    

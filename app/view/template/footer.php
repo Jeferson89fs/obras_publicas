@@ -1,4 +1,4 @@
-
+    </div>
     <div class="float-right d-none d-sm-block">
         <b>Version</b> 3.2.0
     </div>
@@ -7,11 +7,11 @@
     </body>
 
 
-</html>
+    </html>
 
-<!-- Bootstrap 4 -->
-<script src="<?=BASE?>/public/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
-<script src="<?=BASE?>/public/js/adminlte.min.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="<?=BASE?>/public/js/demo.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="<?= BASE ?>/public/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="<?= BASE ?>/public/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="<?= BASE ?>/public/js/demo.js"></script>

@@ -138,8 +138,8 @@ class Router
     {
         try {
 
-            $route = $this->getRoute();            
-
+            $route = $this->getRoute();      
+            
             if (!isset($route['controller'])) {
                 throw new Exception('A URL não pode ser processada!', 500);
             }
@@ -169,13 +169,6 @@ class Router
             } else {
                 return new Response(200, $route['controller']());
             }
-
-
-
-
-            //retornar uma stancia de Response
-
-            //throw new Exception('Pagina não encointrada', 404);
 
         } catch (Exception $e) {
             return new Response($e->getCode(), $e->getMessage());
@@ -214,7 +207,9 @@ class Router
 
     public function redirect($uri,$httpMethod="GET", array $paramns=[]){        
         $this->Request->setUri($uri);
-        $this->Request->setHttpMethod($httpMethod);                
+        $this->Request->setHttpMethod($httpMethod);    
+
+        executar_js("history.pushState({}, null, '".$this->url.$this->Request->getUri()."');");       
 
         return $this->run($paramns)->sendResponse();
 

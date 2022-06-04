@@ -196,11 +196,11 @@ class Request
         $paramns = [];
         if(count($rules)){
             foreach($rules as  $collumn => $rules){
-                list($errors[], $paramns[]) = $this->validateColumn($collumn, $rules);                
+                list($errors['error'][], $paramns[]) = $this->validateColumn($collumn, $rules);                
             }
         }
         
-        $errors =$this->handleMessages($errors, $Messages,$paramns);
+        $errors['error'] = $this->handleMessages($errors['error'], $Messages,$paramns);
         
         //$Messages
         return $errors;        
