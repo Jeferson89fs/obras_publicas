@@ -27,7 +27,7 @@ class Menu extends Model{
 
     public function getMessages(){
         return [
-                'menunome.required' => 'O conteudo do texto está sendo modificado :attribute :value'
+             //   'menunome.required' => 'O conteudo do texto está sendo modificado :attribute :value'
         ];
     }
 

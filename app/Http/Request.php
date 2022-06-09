@@ -184,8 +184,9 @@ class Request
 
         $error = [];
         foreach ($errors as $chave => $rule) {
-            $param = $paramns[$chave][reset(array_keys($rule))];
+            $param = $paramns[$chave][reset(array_keys($rule))];            
             $rule[reset(array_keys($rule))] = $Messages[reset(array_keys($rule))] ?? $rule[reset(array_keys($rule))];
+            //replace
             $rule[reset(array_keys($rule))] = str_replace(':attribute', $param['collumn'],   $rule[reset(array_keys($rule))]);
             $rule[reset(array_keys($rule))] = str_replace(':value',     $param['validator'], $rule[reset(array_keys($rule))]);
 
@@ -210,10 +211,21 @@ class Request
                 list($errors['error'][], $paramns[]) = $this->validateColumn($collumn, $rules);
             }
         }
-
-        $errors['error'] = $this->handleMessages($errors['error'], $Messages, $paramns);
-
-        //$Messages
+        
+        $errors['error'] = $this->mergeArrays(
+                $this->handleMessages($errors['error'], $Messages, $paramns) );        
+        
         return $errors;
+    }
+
+    private function mergeArrays($errors){        
+        $errors2 = [];
+        foreach($errors as $c => $error){
+            foreach($error as $chave => $valor){                
+                $errors2[$chave] = $valor;    
+            }
+        }
+
+        return $errors2;
     }
 }

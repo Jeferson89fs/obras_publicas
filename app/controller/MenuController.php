@@ -9,6 +9,7 @@ use App\Http\Response;
 use App\Model\Menu;
 use App\Http\Request;
 use App\Http\Messages;
+
 class MenuController extends AbstractController
 {
 
@@ -23,9 +24,7 @@ class MenuController extends AbstractController
         $Menu = new Menu();
         $Menu->find(1);
         
-
-        //dd($this->getMessage(), false);
-        return View::render('menu/create', $_REQUEST);
+        return View::render('menu/create', [$_REQUEST, 'Mensagens' => $this->Mensagens]);
     }
 
     public function store()

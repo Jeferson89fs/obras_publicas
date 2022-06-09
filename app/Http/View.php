@@ -14,6 +14,7 @@ class View
     */
     private static function getContentView($view, $vars)
     {
+        extract($vars);
         $file = __DIR__ . "/../view/{$view}.php";
 
         

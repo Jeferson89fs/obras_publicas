@@ -29,7 +29,7 @@ class Messages
 
     private function validaError($request)
     {
-        $e = false;
+        $e = false;        
         foreach ($request['redirect']['messages'] as $erro => $errors) {            
             if (!in_array($erro, array_keys($this->typeMessages))) {
                 $e = true;
@@ -52,7 +52,7 @@ class Messages
     {
         if($error){
             if(!$this->messages['error'][$error]){
-                throw new Exception('Erro não encontrado', 500);
+              //  throw new Exception('Erro não encontrado', 500);
             }
             return $this->messages['error'][$error];
         }

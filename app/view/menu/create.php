@@ -1,4 +1,5 @@
 <? require_once(BASE_ROOT . '/app/view/template/template.php'); ?>
+
 <div id="app">
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -31,7 +32,7 @@
           <!-- /.col -->
         </div>
 
-        <?//=Mensagens::getMenssagem($_REQUEST['redirect']['error'])?>
+        
         <form id="frmMenu" method="POST" action="/menu/store">
 
           <div class="row">
@@ -39,6 +40,7 @@
               <div class="form-group">
                 <label for="menunome">Nome</label>
                 <input name="menunome" id="menunome" type="text" class="form-control obrigatory ">
+                <?=($Mensagens->getError('menunome.required'));?>
               </div>
             </div>
           </div>

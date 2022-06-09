@@ -11,7 +11,7 @@ abstract class AbstractController extends Controller
 
     protected $request;
     
-    protected $Errors;
+    protected $Mensagens;
 
     private $App;
 
@@ -20,13 +20,13 @@ abstract class AbstractController extends Controller
         $this->request = new Request;
         $this->loadStructure();
         
-        $this->Errors = new Messages($_REQUEST);
+        $this->Mensagens = new Messages($_REQUEST);
+        
     }
 
     public function getMessage(){
-        return $this->Errors;
+        return $this->Mensagens;
     }
-
     
     private function loadStructure(){
         $this->App['Menu'] = $this->loadMenu();

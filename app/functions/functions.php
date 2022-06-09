@@ -2,7 +2,7 @@
 
 use App\Http\ConfigEnv;
 
-function dd($param = [], $die = true)
+function dd($param = [], $die = false)
 {
     echo "<pre>";
     print_r($param);
