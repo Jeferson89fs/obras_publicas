@@ -8,7 +8,7 @@ use App\Controller\AbstractController;
 use App\Http\Response;
 use App\Model\Menu;
 use App\Http\Request;
-
+use App\Http\Messages;
 class MenuController extends AbstractController
 {
 
@@ -18,11 +18,13 @@ class MenuController extends AbstractController
     }
 
 
-    public function create($params = '')
-    {
+    public function create()
+    {   
         $Menu = new Menu();
         $Menu->find(1);
+        
 
+        //dd($this->getMessage(), false);
         return View::render('menu/create', $_REQUEST);
     }
 
@@ -37,10 +39,9 @@ class MenuController extends AbstractController
             'nm_menu_acao' => 'min:3|max:5|required'
         ], $Menu->getMessages());
 
+        
 
-        return redirect('/menu/create', $errors);
-        //return json_encode(['teste' => 'teste']);
-
+        return redirect('/menu/create', $errors);        
 
         //return View::render('menu/create', $_REQUEST);        
     }

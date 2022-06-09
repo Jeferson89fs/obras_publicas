@@ -61,7 +61,7 @@ class Router
      */
     public function post(string $rota, $callMethod, $params = [])
     {
-        return   $this->addRoute('POST', $rota, $callMethod, $params);
+        return $this->addRoute('POST', $rota, $callMethod, $params);
     }
 
     /**
@@ -84,11 +84,10 @@ class Router
     {
         $this->group =  $grupo ?? '/';
         if ($call instanceof Closure) {
-          $call();               
+            $call();
         }
-        
-        $this->group ='/'; 
 
+        $this->group = '/';
     }
 
 
@@ -134,12 +133,12 @@ class Router
     /**
      * return Response
      */
-    public function run(array $arrParam=[])
+    public function run(array $arrParam = [])
     {
         try {
 
-            $route = $this->getRoute();      
-            
+            $route = $this->getRoute();
+
             if (!isset($route['controller'])) {
                 throw new Exception('A URL não pode ser processada!', 500);
             }
@@ -153,6 +152,11 @@ class Router
 
                 $class =  'App\\Controller\\' . $class;
 
+                /*
+                 * TEM QUE SER AQUI POR CAUSA DO __CONSTRUCT
+                 */
+                $_REQUEST['redirect']['messages'] = $arrParam;                
+                
                 $Instancia = new $class;
                 //$arrParam = [];
 
@@ -163,13 +167,12 @@ class Router
                 foreach ($route['controller']['params']['variables'] as $c => $v) {
                     $arrParam[$v] = $route['variables'][$v];
                 }
+
                 
-                $_REQUEST['redirect'] = $arrParam;              
                 return new Response(200, call_user_func_array([$Instancia, $function], $arrParam));
             } else {
                 return new Response(200, $route['controller']());
             }
-
         } catch (Exception $e) {
             return new Response($e->getCode(), $e->getMessage());
         }
@@ -187,15 +190,15 @@ class Router
         $xUri = strlen($this->prefix) ? explode($this->prefix, $uri) : [$uri];
 
         //adicionar para remover o grupo
-        $ex = explode('/',$uri);
+        $ex = explode('/', $uri);
         unset($ex[0]);
-        
-        $grupo = $ex[1] ?? '/';
-        
 
-        if(isset($this->routes[$grupo])){
+        $grupo = $ex[1] ?? '/';
+
+
+        if (isset($this->routes[$grupo])) {
             $xUri = strlen($grupo) ? explode($grupo, $uri) : [$uri];
-        }   
+        }
 
         return end($xUri) ?? '/';
     }
@@ -205,19 +208,19 @@ class Router
      * @return array
      */
 
-    public function redirect($uri,$httpMethod="GET", array $paramns=[]){        
+    public function redirect($uri, $httpMethod = "GET", array $paramns = [])
+    {
         $this->Request->setUri($uri);
-        $this->Request->setHttpMethod($httpMethod);    
+        $this->Request->setHttpMethod($httpMethod);
 
-        executar_js("history.pushState({}, null, '".$this->url.$this->Request->getUri()."');");       
+        executar_js("history.pushState({}, null, '" . $this->url . $this->Request->getUri() . "');");
 
         return $this->run($paramns)->sendResponse();
-
     }
 
     private function getRoute()
     {
-        
+
         $uri = $this->getUri();
 
         $httpMethod = $this->Request->getHttpMethod();
@@ -236,7 +239,7 @@ class Router
                         //monta um array com as chaves e o metches
                         $methods[$httpMethod]['variables'] = array_combine($keys, $metches);
                         $methods[$httpMethod]['variables']['request'] = $this->Request;
-                        
+
                         return $methods[$httpMethod];
                     }
 

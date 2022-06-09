@@ -16,13 +16,14 @@ class View
     {
         $file = __DIR__ . "/../view/{$view}.php";
 
+        
         $html = '';
         if (file_exists($file)) {
             ob_start();
             include $file;
             $html  = ob_get_clean();
-        }
-
+        }        
+        
         return $html;
     }
 
@@ -31,8 +32,7 @@ class View
     */
     public static function render($view, $vars = [])
     {
-        $contentView = self::getContentView($view, $vars);
-
+        $contentView = self::getContentView($view, $vars);        
         return $contentView;
     }
 }

@@ -2,6 +2,7 @@
 <div id="app">
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
+    <?// dd($_REQUEST['redirect'], false)?>
 
     <!-- Content Header (Page header) -->
     <section class="content-header">
