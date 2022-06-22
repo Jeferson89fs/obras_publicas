@@ -25,6 +25,8 @@ class DB
 
     private  $order = [];
 
+    private  $offSet;
+
     private  $limit;
 
     private  $paginate;
@@ -74,12 +76,18 @@ class DB
         return $this;
     }
 
+    public function offSet($offSet)
+    {
+        $this->offSet = $offSet;
+        return $this;
+    }
+    
     public function limit($limit)
     {
         $this->limit = $limit;
         return $this;
     }
-
+    
     public function order($order, $type = 'DESC')
     {
         $this->order[] = [$order, $type];
@@ -244,6 +252,12 @@ class DB
         return $this->Query = " order by " . implode(', ', $QueryOrder);
     }
 
+    private function compileOffset()
+    {
+        if ($this->offSet)
+            return $this->Query = " offset " . $this->offSet;
+    }
+
     private function compileLimit()
     {
         if ($this->limit)
@@ -254,7 +268,9 @@ class DB
     {
         $where = $this->compileWhere();
         $order = $this->compileOrder();
+        $offSet = $this->compileOffSet();
         $limit = $this->compileLimit();
+
 
         $sql  = " select {$colmns}";
         $sql .= " from {$this->schema}.{$this->table}";
@@ -263,6 +279,7 @@ class DB
         $this->Query  =  $sql;
         $this->Query .=  $where;
         $this->Query .=  $order;
+        $this->Query .=  $offSet;
         $this->Query .=  $limit;
         $this->Query .= "\n";
     }
@@ -270,6 +287,7 @@ class DB
     public function select($colmns = '*')
     {
         $this->QueryBuilder($colmns);       
+        //dd($this->Query);
 
         $Statement = $this->execute($this->Query);
         

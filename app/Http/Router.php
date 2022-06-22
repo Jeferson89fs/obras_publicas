@@ -200,6 +200,13 @@ class Router
             $xUri = strlen($grupo) ? explode($grupo, $uri) : [$uri];
         }
 
+        $pos = strpos(end($xUri), '?');
+        
+        if($pos !== '-1'){
+            $ur = explode('?', end($xUri));
+            return reset($ur);
+        }
+
         return end($xUri) ?? '/';
     }
 

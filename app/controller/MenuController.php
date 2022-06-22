@@ -17,6 +17,9 @@ class MenuController extends AbstractController
     {
         $Menu = new Menu();
         $this->request->fillObject($Menu);
+        //$Menu = $Menu->fillObject($this->request->getPostVars());
+        
+        $Menu->paginate();
 
         return View::render('menu/default', [$_REQUEST, 'Menu' => $Menu]);
     }
@@ -39,6 +42,7 @@ class MenuController extends AbstractController
             'menunome'     => 'required',
             'menucomando'  => 'min:3|max:5|required',
             'nm_menu_acao' => 'min:3|max:5|required'
+
         ], $Menu->getMessages());
 
         

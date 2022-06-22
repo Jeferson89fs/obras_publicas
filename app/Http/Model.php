@@ -157,7 +157,7 @@ class Model
      * @param [type] $result
      * @return Model
      */
-    private function fillObject($result)
+    public function fillObject($result)
     {
         $class = "App\Model\\" . $this->Model;
         $Model = new $class;
@@ -182,6 +182,7 @@ class Model
         
         return reset($result);
     }
+    
 
     /** 
      * Método respopnsavel por pesquisar
@@ -192,6 +193,25 @@ class Model
         return $this->db->select();
     }
 
+    //monta o sql paginado
+    public function paginate(int $pagina=1, int $limit=30){
+        
+        if($_GET['pg']){
+            $pagina = $_GET['pg'];
+        }
+
+        if($_GET['limit']){
+            $limit = $_GET['limit'];
+        }
+
+        $result = $this->db->schema($this->schema)
+            ->table($this->table)                        
+            ->offSet((($pagina-1) * $limit))
+            ->limit($limit)
+            ->select();       
+    }
+
+    
     /**
      * dd function
      * Método responsavel por imprimir a query 
