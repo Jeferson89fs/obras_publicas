@@ -13,7 +13,7 @@ class Menu extends Model{
     
     protected $primaryKey = 'id_menu';
 
-    protected $fillable = [         
+    public $fillable = [         
         'menunome',
         'menudetalhamento',
         'menucomando',
@@ -23,7 +23,7 @@ class Menu extends Model{
         'nm_menu_acao',
     ];
 
-    protected $hidden = [];
+    public $hidden = [];
 
     public function getMessages(){
         return [

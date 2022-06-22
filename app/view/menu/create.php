@@ -50,6 +50,7 @@
               <div class="form-group">
                 <label for="menudetalhamento">Detalhes</label>
                 <input name="menudetalhamento" id="menudetalhamento" type="text" class="form-control obrigatory">
+                <span class=" text-danger "><?=($Mensagens->getError('menudetalhamento.required'));?></span>
               </div>
             </div>
           </div>
@@ -59,6 +60,7 @@
               <div class="form-group">
                 <label for="menucomando">Menu Comando</label>
                 <input name="menucomando" id="menucomando" type="text" class="form-control obrigatory ">
+                <span class=" text-danger "><?=($Mensagens->getError('menucomando.required'));?></span>
               </div>
             </div>
             <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -68,8 +70,6 @@
               </div>
             </div>
           </div>
-
-
 
           <div class="row">
             <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
@@ -82,6 +82,7 @@
               <div class="form-group">
                 <label for="nm_menu_acao">Identificador Único</label>
                 <input name="nm_menu_acao" id="nm_menu_acao" type="text" class="form-control obrigatory ">
+                <span class=" text-danger "><?=($Mensagens->getError('nm_menu_acao.required'));?></span>
               </div>
             </div>
           </div>
@@ -100,6 +101,9 @@
   </div>
 </div>
 <? require_once(BASE_ROOT . '/app/view/template/footer.php'); ?>
+
+
+
 
 <script>
   options = {

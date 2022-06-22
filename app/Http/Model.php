@@ -16,11 +16,11 @@ class Model
 
     protected $primaryKey = 'id';
 
-    protected $fillable = [];
+    public $fillable = [];
 
-    protected $hidden = [];
+    public $hidden = [];
 
-    private  $atributes = [];
+    public  $atributes = [];
 
     public function __construct()
     {

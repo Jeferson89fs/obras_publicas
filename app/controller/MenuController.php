@@ -15,7 +15,10 @@ class MenuController extends AbstractController
 
     public function index()
     {
-        return View::render('menu/default', $_REQUEST);
+        $Menu = new Menu();
+        $this->request->fillObject($Menu);
+
+        return View::render('menu/default', [$_REQUEST, 'Menu' => $Menu]);
     }
 
 

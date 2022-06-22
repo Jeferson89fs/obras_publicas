@@ -41,6 +41,25 @@ class Request
         $this->uri = $_SERVER['REQUEST_URI']; // (substr($_SERVER['REQUEST_URI'], strlen($_SERVER['REQUEST_URI']) - 1)) == '/' ? substr($_SERVER['REQUEST_URI'], 0, -1) : $_SERVER['REQUEST_URI'];
     }
 
+    public function fillObject(&$object)
+    {
+        $object->{$object->primaryKey} = $this->getInput($object->primaryKey);
+
+        if (is_array($object->fillable)) {
+            
+            foreach ($object->fillable as $c => $v) {
+                $object->{$v} = $this->getInput($v);
+            }
+        }
+
+        if (is_array($object->hidden)) {
+            foreach ($object->hidden as $c => $v) {
+                $object->{$v} = $this->getInput($v);
+            }
+       }
+        
+    }
+
     public function getInput($nm_campo)
     {
         if ($this->postVars[$nm_campo]) {
@@ -183,16 +202,21 @@ class Request
     {
 
         $error = [];
+        
         foreach ($errors as $chave => $rule) {
-            $param = $paramns[$chave][reset(array_keys($rule))];            
+            $param = $paramns[$chave][reset(array_keys($rule))];
+            
             $rule[reset(array_keys($rule))] = $Messages[reset(array_keys($rule))] ?? $rule[reset(array_keys($rule))];
-            //replace
-            $rule[reset(array_keys($rule))] = str_replace(':attribute', $param['collumn'],   $rule[reset(array_keys($rule))]);
-            $rule[reset(array_keys($rule))] = str_replace(':value',     $param['validator'], $rule[reset(array_keys($rule))]);
-
-            if ($rule[reset(array_keys($rule))]) array_push($error, $rule);
+            //replace            
+            foreach($rule  as $c => $mensagem){
+                $rule[$c] = str_replace(':attribute', $param['collumn'],   $mensagem);
+                $rule[$c] = str_replace(':value',     $param['validator'], $rule[$c]);                                
+                array_push($error, $rule);
+            }
+            
         }
 
+//dd($error);
         return $error;
     }
 
@@ -211,18 +235,20 @@ class Request
                 list($errors['error'][], $paramns[]) = $this->validateColumn($collumn, $rules);
             }
         }
-        
+
         $errors['error'] = $this->mergeArrays(
-                $this->handleMessages($errors['error'], $Messages, $paramns) );        
+            $this->handleMessages($errors['error'], $Messages, $paramns)
+        );
         
         return $errors;
     }
 
-    private function mergeArrays($errors){        
+    private function mergeArrays($errors)
+    {
         $errors2 = [];
-        foreach($errors as $c => $error){
-            foreach($error as $chave => $valor){                
-                $errors2[$chave] = $valor;    
+        foreach ($errors as $c => $error) {
+            foreach ($error as $chave => $valor) {
+                $errors2[$chave] = $valor;
             }
         }
 

@@ -14,6 +14,7 @@ $this->post('/login/access',    'LoginController@access');
 
 
 $this->get('/menu',             'MenuController@index');
+$this->post('/menu',            'MenuController@index');
 $this->get('/menu/create',      'MenuController@create');
 $this->post('/menu/store',      'MenuController@store');
 $this->get('/menu/edit/{id}',   'MenuController@edit');
