@@ -22,7 +22,8 @@
 </head>
 
 <body class="hold-transition sidebar-mini">
-    <div class="wrapper">
-        <? require_once(BASE_ROOT.'/app/view/template/header.php')?>
-        <? require_once(BASE_ROOT.'/app/view/template/left.php')?>   
+    <div id="app">
+        <div class="wrapper">
+            <? require_once(BASE_ROOT.'/app/view/template/header.php')?>
+            <? require_once(BASE_ROOT.'/app/view/template/left.php')?>   
     

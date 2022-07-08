@@ -208,7 +208,9 @@ class Model
             ->table($this->table)                        
             ->offSet((($pagina-1) * $limit))
             ->limit($limit)
-            ->select();       
+            ->select();    
+               
+            return $result;
     }
 
     

@@ -1,5 +1,5 @@
 <? require_once(BASE_ROOT . '/app/view/template/template.php'); ?>
-<div id="app">
+
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -60,17 +60,18 @@
   </section>
   <!-- /.content -->
 </div>
-</div>
+
 <? require_once(BASE_ROOT . '/app/view/template/footer.php'); ?>
 <script>
-  options = {
-    el: '#app',
-    data: {
-      TITULO: 'Cadastro de Menus'
-    },
-    methods: {}
-  }
 
-  const vm = new Vue(options);
-  console.log(vm);
+  // options = {
+  //   el: '#app',
+  //   data: {
+  //     TITULO: 'Cadastro de Menus'
+  //   },
+  //   methods: {}
+  // }
+
+  //const vm = new Vue(options);
+  
 </script>

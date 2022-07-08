@@ -106,6 +106,7 @@
 
 
 <script>
+  
   options = {
     el: '#app',
     data: {
@@ -120,8 +121,7 @@
          
         var myInit = { method: 'POST',
                headers: myHeaders,
-               body: formData,            
-               
+               body: formData,                           
                mode: 'cors',
                cache: 'default' };
 

@@ -17,10 +17,14 @@ class MenuController extends AbstractController
     {
         $Menu = new Menu();
         $this->request->fillObject($Menu);
-        //$Menu = $Menu->fillObject($this->request->getPostVars());
         
-        $Menu->paginate();
+        foreach($Menu->getAllAtributes() as $chave => $valor){
+            if(trim($valor) != ""){
+                $Menu->where($chave, '=', $valor);        
+            }
+        }
 
+        $arrMenu = $Menu->paginate();        
         return View::render('menu/default', [$_REQUEST, 'Menu' => $Menu]);
     }
 

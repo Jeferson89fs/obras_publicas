@@ -5,6 +5,7 @@ namespace App\Http;
 use Closure;
 use Exception;
 use ReflectionFunction;
+use App\Http\Middleware\Queue as MiddlewareQueue;
 
 class Router
 {
@@ -103,12 +104,14 @@ class Router
         $params['variables'] = [];
         $patnerVariable = '/{(.*?)}/';
 
+
         if (preg_match_all($patnerVariable, $route, $matches)) {
             $route = preg_replace($patnerVariable, '(.*?)', $route);
             $params['variables'] = $matches[1];
         }
 
         $patternRoute = '/^' . str_replace('/', '\/', $route) . '$/';
+
 
         if ($callMethod instanceof Closure) {
             $params['controller'] = $callMethod;
@@ -122,10 +125,11 @@ class Router
                 'method' => $method,
                 'classe' => $controllerMethod[0],
                 'metodo' => $controllerMethod[1],
-                'params' => $params
+                'params' => $params,        
+                'middlewares' => $params['middlewares'] ?? []
             ];
         }
-
+        
         //adiciona a rota dentro d aclasse
         $this->routes[$this->group][$patternRoute][$method] = $params;
     }
@@ -139,38 +143,25 @@ class Router
 
             $route = $this->getRoute();
 
+
             if (!isset($route['controller'])) {
                 throw new Exception('A URL não pode ser processada!', 500);
             }
 
-            $args = [];
+            //$args = [];
 
             if (is_array($route['controller'])) {
-                $class = $route['controller']['classe'];
-                $function = $route['controller']['metodo'];
-                $method = $route['controller']['method'];
-
-                $class =  'App\\Controller\\' . $class;
-
-                /*
-                 * TEM QUE SER AQUI POR CAUSA DO __CONSTRUCT
-                 */
-                $_REQUEST['redirect']['messages'] = $arrParam;                
-                
-                $Instancia = new $class;
-                //$arrParam = [];
-
-                if (!method_exists($class, $function)) {
-                    return new Response(200, 'Método não encontrado!');
-                }
 
                 foreach ($route['controller']['params']['variables'] as $c => $v) {
                     $arrParam[$v] = $route['variables'][$v];
                 }
+              //  dd($route);
+                //return new Response(200, call_user_func_array([$Instancia, $function], $arrParam));
+                return (new MiddlewareQueue($route['controller']['params']['middlewares'],$route['controller'], $arrParam ))->next($this->Request);
 
-                
-                return new Response(200, call_user_func_array([$Instancia, $function], $arrParam));
+
             } else {
+                
                 return new Response(200, $route['controller']());
             }
         } catch (Exception $e) {
@@ -197,11 +188,12 @@ class Router
 
 
         if (isset($this->routes[$grupo])) {
+            
             $xUri = strlen($grupo) ? explode($grupo, $uri) : [$uri];
         }
 
         $pos = strpos(end($xUri), '?');
-        
+
         if($pos !== '-1'){
             $ur = explode('?', end($xUri));
             return reset($ur);
@@ -228,7 +220,7 @@ class Router
     private function getRoute()
     {
 
-        $uri = $this->getUri();
+         $uri = $this->getUri();
 
         $httpMethod = $this->Request->getHttpMethod();
 
@@ -240,7 +232,7 @@ class Router
                         //remove a primeira posicao
                         unset($metches[0]);
 
-                        //monta um arrau com as chaves
+                        //monta um array com as chaves
                         $keys = $methods[$httpMethod]['variables'];
 
                         //monta um array com as chaves e o metches
